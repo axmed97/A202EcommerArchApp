@@ -4,19 +4,14 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.SQLServer;
 using WebUI;
 using WebUI.Models;
+using Business.DependencyResolver;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-// AddScoped, AddSingleton, AddTransient
-builder.Services.AddScoped<AppDbContext>();
-
-builder.Services.AddScoped<ICategoryService, CategoryManager>();
-builder.Services.AddScoped<ICategoryDAL, EFCategoryDAL>();
-
-
+builder.Services.Run();
 
 var app = builder.Build();
 

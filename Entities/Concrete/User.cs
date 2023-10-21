@@ -4,6 +4,6 @@ namespace Entities.Concrete
 {
     public class User : AppUser
     {
-        public string PhotoUrl { get; set; }
+        public string Address { get; set; }
     }
 }

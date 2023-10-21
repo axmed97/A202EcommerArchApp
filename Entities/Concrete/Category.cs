@@ -10,7 +10,9 @@ namespace Entities.Concrete
     public class Category : IEntity
     {
         public int Id { get; set; }
-        public string CategoryName { get; set; }
         public string PhotoUrl { get; set; }
+        public bool IsFeatured { get; set; }
+        public List<Product> Products { get; set; }
+        public List<CategoryLanguage> CategoryLanguages { get; set; }
     }
 }
