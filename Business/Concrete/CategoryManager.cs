@@ -71,7 +71,20 @@ namespace Business.Concrete
             }
         }
 
-        public async Task<IResult> UpdateCategoryByLanguageAsync(CategoryEditDTO categoryEditDTO, IFormFile formFile, string webRootPath)
+        public IDataResult<CategoryAdminDetailDTO> GetCategoryById(int id)
+        {
+            var result = _categoryDAL.GetCategoryByIdAdmin(id);
+            return new SuccessDataResult<CategoryAdminDetailDTO>(result);
+        }
+
+        public IResult RemoveCategory(int id)
+        {
+            var category = _categoryDAL.Get(x => x.Id == id);
+            _categoryDAL.Delete(category);
+            return new SuccessResult("Deleted Successfully");
+        }
+
+        public async Task<IResult> UpdateCategoryByLanguageAsync(CategoryAdminDetailDTO categoryEditDTO, IFormFile formFile, string webRootPath)
         {
 
             var result = await _categoryDAL.UpdateCategory(categoryEditDTO, formFile, webRootPath);
@@ -79,7 +92,7 @@ namespace Business.Concrete
             {
                 return new SuccessResult("Success");
             }
-            return new ErrorResult("Success");
+            return new ErrorResult("Error");
 
         }
     }

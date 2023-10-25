@@ -2,6 +2,7 @@
 using Entities.Concrete;
 using Entities.DTOs.CategoryDTOs;
 using Microsoft.AspNetCore.Mvc;
+using static Entities.DTOs.CategoryDTOs.CategoryDTO;
 
 namespace WebUI.Areas.Admin.Controllers
 {
@@ -41,15 +42,43 @@ namespace WebUI.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult Edit()
+        public IActionResult Edit(int id)
         {
-            return View();
+            if (id == null) return NotFound();
+            var result = _categoryService.GetCategoryById(id);
+            if(result.Success)
+            {
+                return View(result.Data);
+            }
+            return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CategoryAddDTO categoryAddDTO, IFormFile Photo)
+        public async Task<IActionResult> Edit(CategoryAdminDetailDTO categoryEditDTO, IFormFile Photo)
         {
-            var result = await _categoryService.AddCategoryByLanguageAsync(categoryAddDTO, Photo, _env.WebRootPath);
+            var result = await _categoryService.UpdateCategoryByLanguageAsync(categoryEditDTO, Photo, _env.WebRootPath);
+            if (result.Success)
+            {
+                return Redirect("/admin/category");
+            }
+            return View();
+        }
+
+        public IActionResult Delete(int id)
+        {
+            if (id == null) return NotFound();
+            var result = _categoryService.GetCategoryById(id);
+            if (result.Success)
+            {
+                return View(result.Data);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public IActionResult Delete(CategoryAdminDetailDTO categoryAdminDetailDTO)
+        {
+            var result = _categoryService.RemoveCategory(categoryAdminDetailDTO.Id);
             if (result.Success)
             {
                 return Redirect("/admin/category");

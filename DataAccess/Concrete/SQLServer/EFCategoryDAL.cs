@@ -56,9 +56,26 @@ namespace DataAccess.Concrete.SQLServer
                 Id = x.Id,
                 CategoryName = x.CategoryLanguages.FirstOrDefault(x => x.LangCode == langCode).CategoryName,
                 PhotoUrl = x.PhotoUrl,
-                IsFeatured = x.IsFeatured
+                IsFeatured = x.IsFeatured,
             }).ToList();
 
+            return result;
+        }
+
+        public CategoryAdminDetailDTO GetCategoryByIdAdmin(int id)
+        {
+            using var context = new AppDbContext();
+
+            var result = context.Categories.Include(x => x.CategoryLanguages)
+                .Select(x => new CategoryAdminDetailDTO()
+                {
+                    Id = x.Id,
+                    IsFeatured = x.IsFeatured,
+                    PhotoUrl = x.PhotoUrl,
+                    CategoryName = x.CategoryLanguages.Select(x => x.CategoryName).ToList(),
+                    //LangCode = x.CategoryLanguages.Select(x => x.CategoryName).ToList()
+                })
+                .FirstOrDefault(x => x.Id == id);
             return result;
         }
 
@@ -87,19 +104,29 @@ namespace DataAccess.Concrete.SQLServer
             return result;
         }
 
-        public async Task<bool> UpdateCategory(CategoryEditDTO categoryEditDTO, IFormFile formFile, string webRootPath)
+        public async Task<bool> UpdateCategory(CategoryAdminDetailDTO categoryEditDTO, IFormFile formFile, string webRootPath)
         {
             try
             {
                 using var context = new AppDbContext();
                 var category = context.Categories.FirstOrDefault(x => x.Id == categoryEditDTO.Id);
 
+                category.IsFeatured = categoryEditDTO.IsFeatured;
+                if(formFile != null)
+                {
+                    category.PhotoUrl = await formFile.SaveFileAsync(webRootPath);
+                }
+
                 context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                var categoryLanguage = context.CategoryLanguages.FirstOrDefault(x => x.CategoryId == category.Id);
+                var categoryLanguage = context.CategoryLanguages.Where(x => x.CategoryId == category.Id).ToList();
 
-                context.CategoryLanguages.Update(categoryLanguage);
+                for (int i = 0; i < categoryLanguage.Count; i++)
+                {
+                    categoryLanguage[i].CategoryName = categoryEditDTO.CategoryName[i];
+                }                
+                context.CategoryLanguages.UpdateRange(categoryLanguage);
                 await context.SaveChangesAsync();
                 return true;
             }

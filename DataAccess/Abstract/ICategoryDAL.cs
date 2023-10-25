@@ -14,9 +14,10 @@ namespace DataAccess.Abstract
     public interface ICategoryDAL : IRepositoryBase<Category>
     {
         Task<bool> AddCategory(CategoryAddDTO categoryAddDTO, IFormFile formFile, string webRootPath);
-        Task<bool> UpdateCategory(CategoryEditDTO categoryEditDTO, IFormFile formFile, string webRootPath);
+        Task<bool> UpdateCategory(CategoryAdminDetailDTO categoryEditDTO, IFormFile formFile, string webRootPath);
         List<CategoryAdminListDTO> GetAllCategoriesAdminList(string langCode);
         List<CategoryFeaturedDTO> GetCategoryFeatureds(string langCode);
         List<CategoryNavbarDTO> GetCategoryNavbars(string langCode);
+        CategoryAdminDetailDTO GetCategoryByIdAdmin(int id);
     }
 }
