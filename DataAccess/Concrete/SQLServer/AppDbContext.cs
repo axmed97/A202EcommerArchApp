@@ -31,5 +31,24 @@ namespace DataAccess.Concrete.SQLServer
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
         }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var datas = ChangeTracker.Entries<BaseEntity>();
+
+            foreach (var data in datas)
+            {
+                switch (data.State)
+                {
+                    case EntityState.Added:
+                        data.Entity.CreatedDate = DateTime.Now;
+                        break;
+                    case EntityState.Modified:
+                        data.Entity.UpdatedDate = DateTime.Now;
+                        break;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
     }
 }

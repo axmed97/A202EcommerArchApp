@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete
 {
-    public class Product : IEntity
+    public class Product : BaseEntity, IEntity
     {
-        public int Id { get; set; }
         public decimal Price { get; set; }
         public decimal DisCount { get; set; }
         public int Quantity { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public bool IsFeatured { get; set; }

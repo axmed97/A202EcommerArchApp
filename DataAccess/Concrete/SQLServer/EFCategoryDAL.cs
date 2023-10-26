@@ -42,6 +42,7 @@ namespace DataAccess.Concrete.SQLServer
             }
             catch (Exception)
             {
+
                 return false;
             }
         }
