@@ -11,6 +11,6 @@ namespace Entities.Concrete
     {
         public string PhotoUrl { get; set; }
         public int ProductId { get; set; }
-        public List<Product> Product { get; set; }
+        public Product Product { get; set; }
     }
 }

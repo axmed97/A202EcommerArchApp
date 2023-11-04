@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace DataAccess.Concrete.SQLServer
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<IdentityRole>().ToTable("Roles");
+
+            modelBuilder.Entity<ProductAdminListDTO>().ToView(null);
 
             modelBuilder.Entity<Order>()
                 .HasOne(x => x.User)

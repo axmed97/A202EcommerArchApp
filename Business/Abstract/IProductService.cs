@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Entities.DTOs.ProductDTOs.ProductDTO;
 
 namespace Business.Abstract
 {
     public interface IProductService
     {
         Task<IResult> AddProductByLang(ProductAddDTO productAddDTO, string userId);
+        IDataResult<List<ProductAdminListDTO>> GetAllProductAdminList(string langCode);
+        IDataResult<ProductEditRecordDTO> GetProductEdit(int id);
     }
 }

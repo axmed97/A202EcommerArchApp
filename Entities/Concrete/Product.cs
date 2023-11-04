@@ -19,5 +19,6 @@ namespace Entities.Concrete
         public bool IsFeatured { get; set; }
         public List<Picture> Pictures { get; set; }
         public List<Order> Orders { get; set; }
+        public List<ProductLanguage> ProductLanguages { get; set; }
     }
 }

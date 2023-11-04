@@ -1,15 +1,40 @@
-using Business.Abstract;
-using Business.Concrete;
-using DataAccess.Abstract;
+﻿using Business.DependencyResolver;
 using DataAccess.Concrete.SQLServer;
-using WebUI;
-using WebUI.Models;
-using Business.DependencyResolver;
+using Entities.Concrete;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+builder.Services.AddDefaultIdentity<User>().AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.ConfigureApplicationCookie(option =>
+{
+    option.LoginPath = "/Auth/Login";
+});
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+});
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.HttpOnly = HttpOnlyPolicy.Always; // HttpOnly özelliğini her zaman etkinleştir
+    options.Secure = CookieSecurePolicy.Always; // Çerezlerin sadece güvenli bağlantılarda iletilmesini zorunlu kıl
+});
 
 builder.Services.Run();
 

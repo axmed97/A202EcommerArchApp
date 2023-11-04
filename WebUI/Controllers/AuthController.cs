@@ -9,6 +9,7 @@ namespace WebUI.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+
         public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
@@ -60,7 +61,8 @@ namespace WebUI.Controllers
                 Email = register.Email,
                 UserName = register.Email,
                 Lastname = register.Lastname,
-                Firstname = register.Firstname
+                Firstname = register.Firstname,
+                Address = "/"
             };
 
             var result = await _userManager.CreateAsync(newUser, register.Password);

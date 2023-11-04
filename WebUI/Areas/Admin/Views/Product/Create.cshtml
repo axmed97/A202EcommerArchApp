@@ -53,7 +53,59 @@
         <select class="form-control" name="CategoryId" asp-items="@ViewBag.Categories"></select>
     </div>
     <div class="form-group">
-        <input type="file" accept="image/*" class="form-control"  />
+        <input type="file" id="ProductPicture" accept="image/*" multiple class="form-control" />
     </div>
+
+    <div class="card my-3">
+        <div id="pictureList" class="my-3 row p-2">
+            
+        </div>
+    </div>
+    
     <input type="submit" value="Create" class="btn btn-dark" />
 </form>
+
+@section Scripts{
+    <script>
+        const productPicture = document.querySelector('#ProductPicture');
+        const pictureList = document.querySelector("#pictureList")
+
+        productPicture.addEventListener('change', function (e) {
+            var datas = new FormData();
+            var pictures = this.files;
+
+            console.log(pictures);
+            for (let i = 0; i < pictures.length; i++) {
+                datas.append("PhotoUrls", pictures[i]);
+            }
+
+            $.ajax({
+                url: "/Admin/Picture/UploadPictures",
+                type: "POST",
+                dataType: "json",
+                data: datas,
+                contentType: false,
+                processData: false,
+                success: function (e) {
+                    console.log(e);
+                    for (let i = 0; i < e.length; i++) {
+                        CreatePhotoList(e[i]);
+                    }
+                },
+                error: function (e) {
+                    console.error(e);
+                }
+            })
+        })
+
+        function CreatePhotoList(photo) {
+            pictureList.innerHTML += `
+                    <div class="col-2">
+                        <img src="${photo}" class="img-fluid" />
+                        <input type="hidden" name="PhotoUrls" value="${photo}" />
+                    </div>
+            `
+        }
+
+    </script>
+}        

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Entities.DTOs.ProductDTOs.ProductDTO;
 
 namespace Business.Concrete
 {
@@ -28,6 +29,18 @@ namespace Business.Concrete
                 return new SuccessResult();
 
             return new ErrorResult();
+        }
+
+        public IDataResult<List<ProductAdminListDTO>> GetAllProductAdminList(string langCode)
+        {
+            var result = _productDAL.ProductAdminListDTOs(langCode);
+            return new SuccessDataResult<List<ProductAdminListDTO>>(result);
+        }
+
+        public IDataResult<ProductEditRecordDTO> GetProductEdit(int id)
+        {
+            var result = _productDAL.GetProductEditDTO(id);
+            return new SuccessDataResult<ProductEditRecordDTO>(result);
         }
     }
 }
