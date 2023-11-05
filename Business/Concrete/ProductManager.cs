@@ -42,5 +42,11 @@ namespace Business.Concrete
             var result = _productDAL.GetProductEditDTO(id);
             return new SuccessDataResult<ProductEditRecordDTO>(result);
         }
+
+        public async Task<IResult> UpdateProductByLang(ProductEditRecordDTO productEditRecordDTO)
+        {
+            var result = await _productDAL.EditProductByLanguage(productEditRecordDTO);
+            return new SuccessResult();
+        }
     }
 }

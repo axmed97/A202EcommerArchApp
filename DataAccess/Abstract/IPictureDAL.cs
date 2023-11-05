@@ -10,6 +10,6 @@ namespace DataAccess.Abstract
 {
     public interface IPictureDAL : IRepositoryBase<Picture>
     {
-
+        Task<bool> RemovePictureAsync(string url);
     }
 }

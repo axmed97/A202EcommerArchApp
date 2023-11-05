@@ -1,4 +1,5 @@
-﻿using Core.Helper;
+﻿using Business.Abstract;
+using Core.Helper;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,36 +9,31 @@ namespace WebUI.Areas.Admin.Controllers
     public class PictureController : Controller
     {
         private readonly IWebHostEnvironment _env;
-
-        public PictureController(IWebHostEnvironment env)
+        private readonly IPictureService _pictureService;
+        public PictureController(IWebHostEnvironment env, IPictureService pictureService)
         {
             _env = env;
+            _pictureService = pictureService;
         }
 
         public async Task<JsonResult> UploadPictures(List<IFormFile> PhotoUrls)
         {
             return Json(await PhotoUrls.SaveFileRangeAsync(_env.WebRootPath));
         }
+        
         [HttpPost]
         public async Task<JsonResult> RemovePicture(string PhotoUrl)
         {
-            try
+            await _pictureService.RemoveProductPictureAsync(PhotoUrl);
+            var fileName = Path.GetFileName(PhotoUrl);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\uploads\\", fileName);
+
+            if (System.IO.File.Exists(filePath))
             {
-                var filePath = Path.Combine(_env.WebRootPath, PhotoUrl); // Combine the web root path with the relative URL
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath); // Delete the file
-                    return Json(new { success = true, message = "Image deleted successfully" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Image not found" });
-                }
+                System.IO.File.Delete(filePath);
             }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
+
+            return Json("");
         }
     }
 }

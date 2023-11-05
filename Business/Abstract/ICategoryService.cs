@@ -1,6 +1,7 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
 using Entities.DTOs.CategoryDTOs;
+using Entities.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

@@ -16,6 +16,13 @@ namespace DataAccess.Concrete.SQLServer
             {
                 using var context = new AppDbContext();
 
+                List<Picture> pictures = new();
+
+                for (int i = 0; i < productAddDTO.PhotoUrls.Count; i++)
+                {
+                    pictures.Add(new Picture { PhotoUrl = productAddDTO.PhotoUrls[i]});
+                }
+
                 Product product = new()
                 {
                     CategoryId = productAddDTO.CategoryId,
@@ -23,20 +30,11 @@ namespace DataAccess.Concrete.SQLServer
                     Price = productAddDTO.Price,
                     DisCount = productAddDTO.DisCount,
                     IsFeatured = productAddDTO.IsFeatured,
-                    UserId = userId
+                    UserId = userId,
+                    Pictures = pictures
                 };
 
                 await context.Products.AddAsync(product);
-                await context.SaveChangesAsync();
-
-                List<Picture> pictures = new();
-
-                for (int i = 0; i < productAddDTO.PhotoUrls.Count; i++)
-                {
-                    pictures.Add(new Picture { PhotoUrl = productAddDTO.PhotoUrls[i], ProductId = product.Id });
-                }
-
-                await context.Pictures.AddRangeAsync(pictures);
                 await context.SaveChangesAsync();
 
                 for (int i = 0; i < productAddDTO.ProductNames.Count; i++)
@@ -61,6 +59,45 @@ namespace DataAccess.Concrete.SQLServer
             }
         }
 
+        public async Task<bool> EditProductByLanguage(ProductEditRecordDTO productEditRecordDTO)
+        {
+            using var context = new AppDbContext();
+
+            List<Picture> pictures = new();
+
+            for (int i = 0; i < productEditRecordDTO.PhotoUrls.Count; i++)
+            {
+                pictures.Add(new Picture { PhotoUrl = productEditRecordDTO.PhotoUrls[i] });
+            }
+
+            var product = context.Products.FirstOrDefault(x => x.Id == productEditRecordDTO.Id);
+            var picturesData = context.Pictures.Where(x => x.ProductId == productEditRecordDTO.Id).ToList();
+            
+            context.Pictures.RemoveRange(picturesData);
+            await context.SaveChangesAsync();
+
+            product.IsFeatured = productEditRecordDTO.IsFeatured;
+            product.Price = productEditRecordDTO.Price;
+            product.DisCount = productEditRecordDTO.DisCount;
+            product.Quantity = productEditRecordDTO.Quantity;
+            product.CategoryId = productEditRecordDTO.CategoryId;
+            product.Pictures = pictures;
+
+            context.Products.Update(product);
+
+            var productLanguage = context.ProductLanguages.Where(x => x.ProductId == product.Id).ToList();
+
+            for (int i = 0; i < productLanguage.Count; i++)
+            {
+                productLanguage[i].ProductName = productEditRecordDTO.ProductNames[i];
+                productLanguage[i].Description = productEditRecordDTO.Descriptions[i];
+                productLanguage[i].SeoUrl = productEditRecordDTO.ProductNames[i].ReplaceInvalidChars();
+            }
+            context.ProductLanguages.UpdateRange(productLanguage);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
         public ProductEditRecordDTO GetProductEditDTO(int id)
         {
             using var context = new AppDbContext();
@@ -82,7 +119,6 @@ namespace DataAccess.Concrete.SQLServer
 
             return result;
         }
-
         public List<ProductAdminListDTO> ProductAdminListDTOs(string LangCode)
         {
             using var context = new AppDbContext();

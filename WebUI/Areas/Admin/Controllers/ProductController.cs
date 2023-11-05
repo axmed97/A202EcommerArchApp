@@ -3,6 +3,7 @@ using Entities.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using static Entities.DTOs.ProductDTOs.ProductDTO;
 
 namespace WebUI.Areas.Admin.Controllers
 {
@@ -54,6 +55,16 @@ namespace WebUI.Areas.Admin.Controllers
             var categories = _categoryService.GetAllCategoriesFeatured("az-AZ");
             ViewBag.Categories = new SelectList(categories.Data, "Id", "CategoryName");
             return View(result.Data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProductEditRecordDTO productEditRecordDTO)
+        {
+            var result = await _productService.UpdateProductByLang(productEditRecordDTO);
+            if(result.Success)
+                return RedirectToAction("Index");
+
+            return View();
         }
     }
 }

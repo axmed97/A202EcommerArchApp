@@ -12,6 +12,7 @@ namespace Business.Abstract
     public interface IProductService
     {
         Task<IResult> AddProductByLang(ProductAddDTO productAddDTO, string userId);
+        Task<IResult> UpdateProductByLang(ProductEditRecordDTO productEditRecordDTO);
         IDataResult<List<ProductAdminListDTO>> GetAllProductAdminList(string langCode);
         IDataResult<ProductEditRecordDTO> GetProductEdit(int id);
     }

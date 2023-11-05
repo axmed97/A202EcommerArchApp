@@ -3,11 +3,6 @@ using Business.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.SQLServer;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.DependencyResolver
 {
@@ -23,6 +18,9 @@ namespace Business.DependencyResolver
 
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<IProductDAL, EFProductDAL>();
+
+            services.AddScoped<IPictureService, PictureManager>();
+            services.AddScoped<IPictureDAL, EFPictureDAL>();
         }
     }
 }
