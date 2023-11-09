@@ -1,11 +1,7 @@
 ﻿using Core.DataAccess;
 using Entities.Concrete;
+using Entities.DTOs.CartDTOs;
 using Entities.DTOs.ProductDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Entities.DTOs.ProductDTOs.ProductDTO;
 
 namespace DataAccess.Abstract
@@ -16,5 +12,7 @@ namespace DataAccess.Abstract
         Task<bool> EditProductByLanguage(ProductEditRecordDTO productEditRecordDTO);
         List<ProductAdminListDTO> ProductAdminListDTOs(string LangCode);
         ProductEditRecordDTO GetProductEditDTO(int id);
+        List<ProductFeaturedDTO> GetProductFeaturedDTOs(string langCode);
+        List<UserCartDTO> GetUserCartDTOs(List<int> ids, string langCode);
     }
 }

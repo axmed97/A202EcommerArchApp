@@ -1,10 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
+using Entities.DTOs.CartDTOs;
 using Entities.DTOs.ProductDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Entities.DTOs.ProductDTOs.ProductDTO;
 
 namespace Business.Abstract
@@ -15,5 +11,8 @@ namespace Business.Abstract
         Task<IResult> UpdateProductByLang(ProductEditRecordDTO productEditRecordDTO);
         IDataResult<List<ProductAdminListDTO>> GetAllProductAdminList(string langCode);
         IDataResult<ProductEditRecordDTO> GetProductEdit(int id);
+        IDataResult<List<ProductFeaturedDTO>> GetProductFeaturedList(string langCode);
+        IDataResult<List<UserCartDTO>> GetProductForCart(List<int> ids, string langCode, List<int> quantities);
+        IDataResult<int> GetProductByIdQuantity(int productId);
     }
 }

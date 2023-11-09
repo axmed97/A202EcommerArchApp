@@ -1,7 +1,11 @@
-﻿using Business.Abstract;
+﻿using AutoMapper;
+using Business.Abstract;
+using Business.AutoMapper;
 using Business.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.SQLServer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Business.DependencyResolver
@@ -21,6 +25,29 @@ namespace Business.DependencyResolver
 
             services.AddScoped<IPictureService, PictureManager>();
             services.AddScoped<IPictureDAL, EFPictureDAL>();
+
+            services.AddScoped<IOrderService, OrderManager>();
+            services.AddScoped<IOrderDAL, EFOrderDAL>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 8;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            });
+
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
     }
 }

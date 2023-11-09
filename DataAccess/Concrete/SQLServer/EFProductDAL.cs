@@ -2,6 +2,7 @@
 using Core.Helper;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs.CartDTOs;
 using Entities.DTOs.ProductDTOs;
 using Microsoft.EntityFrameworkCore;
 using static Entities.DTOs.ProductDTOs.ProductDTO;
@@ -58,7 +59,6 @@ namespace DataAccess.Concrete.SQLServer
                 return false;
             }
         }
-
         public async Task<bool> EditProductByLanguage(ProductEditRecordDTO productEditRecordDTO)
         {
             using var context = new AppDbContext();
@@ -97,7 +97,6 @@ namespace DataAccess.Concrete.SQLServer
             await context.SaveChangesAsync();
             return true;
         }
-
         public ProductEditRecordDTO GetProductEditDTO(int id)
         {
             using var context = new AppDbContext();
@@ -119,6 +118,41 @@ namespace DataAccess.Concrete.SQLServer
 
             return result;
         }
+
+        public List<ProductFeaturedDTO> GetProductFeaturedDTOs(string langCode)
+        {
+            using var context = new AppDbContext();
+            var result = context.ProductLanguages
+                .Where(x => x.LangCode == langCode && x.Product.IsFeatured == true)
+                .Select(x => new ProductFeaturedDTO
+                {
+                    Id = x.Product.Id,
+                    ProductName = x.ProductName,
+                    Discount = x.Product.DisCount,
+                    Price = x.Product.Price,
+                    PhotoUrl = x.Product.Pictures.FirstOrDefault(z => z.ProductId == x.Product.Id).PhotoUrl
+                }).ToList();
+
+            return result;
+        }
+
+        public List<UserCartDTO> GetUserCartDTOs(List<int> ids, string langCode)
+        {
+            using var context = new AppDbContext();
+
+            var result = context.Products
+                .Where(x => ids.Contains(x.Id))
+                .Select(x => new UserCartDTO
+                {
+                    Id = x.Id,
+                    ProductName = x.ProductLanguages.FirstOrDefault(z => z.LangCode == langCode).ProductName,
+                    PhotoUrl = x.Pictures.FirstOrDefault(z => z.ProductId == x.Id).PhotoUrl,
+                    Price = x.DisCount != 0 ? x.DisCount : x.Price,
+                    Quantity = x.Quantity
+                }).ToList();
+            return result;
+        }
+
         public List<ProductAdminListDTO> ProductAdminListDTOs(string LangCode)
         {
             using var context = new AppDbContext();
